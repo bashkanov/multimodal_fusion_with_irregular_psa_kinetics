@@ -1,0 +1,33 @@
+NOTICE
+This project contains code modified from the following open source projects:
+
+UNet
+
+Implementation of Unet block from NVIDIA's Deep Learning Examples
+Source: https://github.com/NVIDIA/DeepLearningExamples/blob/ff6f7c6532e50f0d6b7268b3e3ee66083dd260c7/PyTorch/Segmentation/nnUNet/models/unet.py
+License: Apache License 2.0
+Modifications: Adapted for processing anisotropic prostate MRI data with modified encoder architecture
+
+Multi-Time Attention Networks (mTAN)
+
+Original work by Shukla & Marlin
+Source: https://github.com/reml-lab/mTAN
+License: MIT License
+Modifications: Adapted for processing irregular PSA measurements
+
+Dynamic Affine Feature Transform (DAFT)
+
+Original work by Pölsterl et al.
+Source: https://github.com/ai-med/DAFT
+License: GNU General Public License v3.0
+Note: No code was directly copied; our implementation was influenced by the architectural design described in the paper and repository
+
+Each of these works remains subject to their original licenses. Copies of the original license texts are included below:
+
+Apache License 2.0 (UNet)
+
+MIT License (mTAN)
+
+GNU General Public License v3.0 (DAFT Reference Implementation)
+
+This NOTICE file is provided for informational purposes only and does not modify the terms of any license.
