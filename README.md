@@ -23,14 +23,13 @@ This repository contains the implementation of a multimodal fusion framework tha
 
 ## Performance Highlights
 
-- Internal Dataset (630 cases):
+- Internal Dataset (630 hold-out test cases):
   - AUC: 0.843 (vs 0.808 for image-only)
   - Improved sensitivity (74.5% vs 62.2%) at matched specificity (76.5%)
   
-- External Dataset (419 cases):
+- External Dataset (419 hold-out test cases):
   - AUC: 0.765
   - Robust performance across 160 different MRI devices
-
 
 ## Model Architecture
 
@@ -38,6 +37,15 @@ The framework consists of three main components:
 1. nnUNet-Encoder backbone for MRI processing
 2. mTAN module for handling irregular PSA measurements
 3. Fusion module (FC-CAT-FC/DAFT) for multimodal integration
+
+## Usage
+Implementation of the best configutation ```FC-CAT-FC-mTAND-RNN``` is defined as follows:
+```
+python main.py --discriminator_net nnunet_enc_2FC \
+               --time_model_net mTAN_RNN \
+               --fusion_mode daft \
+               --pe_type learned
+```
 
 ### Temporal Data Processing
 ![PSA Time Series Examples](img/PSA.png)

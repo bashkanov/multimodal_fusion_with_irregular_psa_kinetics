@@ -12,7 +12,7 @@ def get_main_args():
     arg("--time_model_net", default="mTAN_RNN", help="Time sequence model. Default: %(default)s")
     arg("--fusion_mode", default="enc_mtan_concat_trainable", 
         choices=["enc_mtan_emb", "enc_mtan_concat", "enc_mtan_emb_trainable", "enc_mtan_concat_trainable",
-                 "concat_tabular", "transformer_encoder", "None"])
+                 "concat_tabular", "transformer_encoder", "None"], help="Fusion method. Default: %(default)s")
     arg("--film_location", type=int, default=0, help="location of FiLM when a Film-based model is trained. Default: %(default)s")
     arg("--daft_bottleneck_factor", type=float, default=7.0, help="Reduction factor in a Film-based model. Default: %(default)s")
     arg("--daft_scale", choices=["enabled", "disabled"], default="enabled", help="scaling in film. Default: %(default)s")
