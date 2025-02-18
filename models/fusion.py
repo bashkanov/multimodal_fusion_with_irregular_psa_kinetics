@@ -47,16 +47,17 @@ def get_image_model(args):
                 bottleneck_dim=int(filters[-1]/2),
                 film_location=args.film_location,
             )
-        
             return model 
+        
         return get_nnunet_enc(args)
+    else:
+        raise Warning(f"Image model not found {args.discriminator_net}")
     
     
 def get_sequence_model(args):
-    model = None
-
+    
     if args.time_model_net == "mTAN_transformer":
-        model = enc_mtan_classif_transformer(
+        return enc_mtan_classif_transformer(
             input_dim=args.num_features_ts, 
             query=torch.linspace(0, 1., 128), 
             nhidden=args.emb_dim, 
@@ -68,11 +69,10 @@ def get_sequence_model(args):
             num_classes=args.num_classes,
             return_hidden=args.return_hidden,
             ).to(args.device)
-        return model
     
     if "mTAN" in args.time_model_net:
         encoder_type = args.time_model_net.split("_")[-1]
-        model = enc_mtan_classif(
+        return enc_mtan_classif(
             input_dim=args.num_features_ts, 
             query=torch.linspace(0, 1., 128), 
             nhidden=args.emb_dim, 
@@ -86,8 +86,6 @@ def get_sequence_model(args):
             encoder_type=encoder_type,
             ).to(args.device)
     
-        return model
-    
     if args.time_model_net in ['RNN', 'GRU', 'LSTM']:
         return SimpleRNN(input_dim=args.num_features_ts,
                          nhidden=args.emb_dim, 
@@ -97,8 +95,12 @@ def get_sequence_model(args):
                          append_missing="mask" in args.seq_aux_features, 
                          append_timestamps="time" in args.seq_aux_features, 
                          )
+    
+    raise Warning(f"Image model not found {args.discriminator_net}")
+
         
 def get_model(args):
+    
     if args.fusion_mode in ["concat_tabular", "enc_mtan_emb", "enc_mtan_concat", "enc_mtan_emb_trainable", "enc_mtan_concat_trainable"]:
         class FusedModel(nn.Module):
             def __init__(self):
@@ -110,7 +112,6 @@ def get_model(args):
                 self.seq_model = get_sequence_model(args)
                 self.image_model = get_image_model(args)
                 self.fusion_mode = args.fusion_mode
-                # self.pool_1D = nn.AdaptiveAvgPool1d(1)
         
             def forward(self, image, tabular, observed_data, times):
                 tabular = tabular.to(dtype=image.dtype)
@@ -120,7 +121,6 @@ def get_model(args):
                     if 'enc_mtan_concat' in self.fusion_mode:
                         fused_features = torch.cat((emb, tabular), dim=-1)
                         fused_features = fused_features.to(dtype=image.dtype)
-                        # fused_features = fused_features.half()
                         output = self.image_model((image, fused_features))
                     elif 'enc_mtan_emb' in self.fusion_mode:
                         output = self.image_model((image, emb))
@@ -135,6 +135,7 @@ def get_model(args):
         
     elif "mTAN" in args.time_model_net or args.time_model_net in ['RNN', 'GRU', 'LSTM']:
         model = get_sequence_model(args)
+  
     elif args.discriminator_net in ["resnet", "nnunet_enc"]:
         model = get_image_model(args)
 
